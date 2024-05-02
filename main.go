@@ -144,7 +144,12 @@ func main() {
 	fmt.Println("Type:", response.Type)
 
 	// saving generated pdf
-	err = os.WriteFile("generated.pdf", []byte(response.Data), 0644)
+	byteData, err := response.DataAsByteArray()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	err = os.WriteFile("generated.pdf", byteData, 0644)
 	if err != nil {
 		fmt.Println("Error saving PDF:", err)
 		return
