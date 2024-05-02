@@ -40,7 +40,7 @@ func (c *GreypotHttpClient) GeneratePDF(templateId, templateContent string, data
 		return nil, err
 	}
 
-	fmt.Printf("Sending request body %s\n", requestBody)
+	// fmt.Printf("Sending request body %s\n", requestBody)
 
 	httpClient := http.Client{}
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
@@ -103,15 +103,38 @@ func main() {
 	httpClient := NewGreypotHttpClient(apiURL, json.NewDecoder(os.Stdin))
 
 	// Sample data for PDF generation
-	templateID := "SH200992"
-	templateContent := "<html><body><h1>Hello, World!</h1></body></html>"
+	templateID := "test.html"
+	// Read HTML content from file
+	htmlContent, err := os.ReadFile("sample.html")
+	if err != nil {
+		fmt.Println("Error reading HTML file:", err)
+		return
+	}
+	
 	data := map[string]interface{}{
-		"name":  "Hop me",
-		"email": "hop@example.com",
+		"invoiceId": "SH200992",
+		"lineItems": []map[string]interface{}{
+			{
+				"name":       "Large box of gold",
+				"netWeight":  "0.1 KG",
+				"quantity":   3,
+				"sku":        "A00005454",
+				"totalValue": "30$",
+				"unitValue":  "10$",
+			},
+			{
+				"name":       "Fresh Air",
+				"netWeight":  "0.3 KG",
+				"quantity":   10,
+				"sku":        "A0000522354",
+				"totalValue": "150$",
+				"unitValue":  "15$",
+			},
+		},
 	}
 
 	// Generate PDF
-	response, err := httpClient.GeneratePDF(templateID, templateContent, data)
+	response, err := httpClient.GeneratePDF(templateID, string(htmlContent), data)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
