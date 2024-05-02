@@ -66,7 +66,7 @@ func (c *GreypotHttpClient) GeneratePDF(templateId, templateContent string, data
 	// fmt.Println("Error sending request body", string(respBody))
 	err = json.Unmarshal(respBody, &response)
 	if err != nil {
-		fmt.Println("Error sending request body")
+		fmt.Println("Error unmarshalling response")
 		return nil, err
 	}
 
